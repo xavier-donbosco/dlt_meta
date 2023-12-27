@@ -5,6 +5,7 @@ storage_account_name = "dgbgen2"
 mounting_point_name  = "/mnt/meta/"
 storage_account_key  = ""
 
+
 # COMMAND ----------
 
 # DBTITLE 1,mounting
