@@ -3,7 +3,7 @@
 container_name       = "dlt-meta"
 storage_account_name = "dgbgen2"
 mounting_point_name  = "/mnt/meta/"
-storage_account_key  = "1e1yBukbRYxuRoKXava/eS5fnyKX/orNHms0F1Zi+c2h1SJKgk13MqG7Y1ugsFa+VUOT4Rbyd+YK+ASt6w1liQ=="
+storage_account_key  = ""
 
 # COMMAND ----------
 
