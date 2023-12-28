@@ -14,9 +14,9 @@ dim_address_path = "/mnt/meta/data/source/dimension_2_Address.csv"
 dim_menu_path    = "/mnt/meta/data/source/dimension_3_Menu.csv"
 dim_restaurant_path = "/mnt/meta/data/source/dimension_4_Restaurants.csv"
 dim_drivers_path = "/mnt/meta/data/source/dimension_5_Drivers.csv"
-fact_1_path      = "/mnt/meta/data/source/fact_table_1.csv"
-fact_2_path      = "/mnt/meta/data/source/fact_table_2.csv"
-fact_3_path      = "/mnt/meta/data/source/fact_table_3.csv"
+fact_ratings_path      = "/mnt/meta/data/source/fact_table_1.csv"
+fact_payments_path      = "/mnt/meta/data/source/fact_table_2.csv"
+fact_orders_path      = "/mnt/meta/data/source/fact_table_3.csv"
 config           = {"header", True}
 bronze_load_date_clm = "ingestion_date"
 silver_load_date_clm = "load_date"
@@ -66,20 +66,20 @@ def t_stream_bronze_drivers():
 @dlt.table(
   comment="The raw fact 1 dataset, ingested from adls."
 )
-def t_stream_bronze_fact_1():
-  return add_load_date(read_csv(fact_1_path, config), today, bronze_load_date_clm)
+def t_stream_bronze_ratings():
+  return add_load_date(read_csv(fact_ratings_path, config), today, bronze_load_date_clm)
 
 @dlt.table(
   comment="The raw fact 2 dataset, ingested from adls."
 )
-def t_stream_bronze_fact_2():
-  return add_load_date(read_csv(fact_2_path, config), today, bronze_load_date_clm)
+def t_stream_bronze_payments():
+  return add_load_date(read_csv(fact_payments_path, config), today, bronze_load_date_clm)
 
 @dlt.table(
   comment="The raw fact 3 dataset, ingested from adls."
 )
-def t_stream_bronze_fact_3():
-  return add_load_date(read_csv(fact_3_path, config), today, bronze_load_date_clm)
+def t_stream_bronze_orders():
+  return add_load_date(read_csv(fact_orders_path, config), today, bronze_load_date_clm)
 
 # COMMAND ----------
 
@@ -129,28 +129,28 @@ def t_stream_silver_drivers():
   return add_load_date(dlt.read("t_stream_bronze_drivers").drop(bronze_load_date_clm), today, silver_load_date_clm)
 
 @dlt.table(
-  comment="fact 1 - data quality of passed records"
+  comment="fact rating - data quality of passed records"
 )
 
 @dlt.expect_all_or_drop({"valid_record": "rating_id IS NOT NULL AND user_id IS NOT NULL AND restaurant_id IS NOT NULL AND rating IS NOT NULL"})
 
-def t_stream_silver_fact_1():
-  return add_load_date(dlt.read("t_stream_bronze_fact_1").drop(bronze_load_date_clm), today, silver_load_date_clm)
+def t_stream_silver_ratings():
+  return add_load_date(dlt.read("t_stream_bronze_ratings").drop(bronze_load_date_clm), today, silver_load_date_clm)
 
 @dlt.table(
-  comment="fact 2 - data quality of passed records"
+  comment="fact payments - data quality of passed records"
 )
 
 @dlt.expect_all_or_drop({"valid_record": "payment_id IS NOT NULL AND payment_method IS NOT NULL AND amount IS NOT NULL AND status IS NOT NULL"})
 
-def t_stream_silver_fact_2():
-  return add_load_date(dlt.read("t_stream_bronze_fact_2").drop(bronze_load_date_clm), today, silver_load_date_clm)
+def t_stream_silver_payments():
+  return add_load_date(dlt.read("t_stream_bronze_payments").drop(bronze_load_date_clm), today, silver_load_date_clm)
 
 @dlt.table(
-  comment="fact 3 - data quality of passed records"
+  comment="fact orders - data quality of passed records"
 )
 
 @dlt.expect_all_or_drop({"valid_record": "order_id IS NOT NULL AND user_id IS NOT NULL AND restaurant_id IS NOT NULL AND order_total IS NOT NULL AND delivery_status IS NOT NULL AND driver_id IS NOT NULL"})
 
-def t_stream_silver_fact_3():
-  return add_load_date(dlt.read("t_stream_bronze_fact_3").drop(bronze_load_date_clm), today, silver_load_date_clm)
+def t_stream_silver_orders():
+  return add_load_date(dlt.read("t_stream_bronze_orders").drop(bronze_load_date_clm), today, silver_load_date_clm)
